@@ -11,7 +11,7 @@ import com.google.firebase.storage.StorageReference
 import dmax.dialog.SpotsDialog
 import android.widget.Button;
 import kotlinx.android.synthetic.main.activity_main.*
-
+import com.squareup.picasso.Picasso;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem
@@ -29,7 +29,8 @@ class MainActivity : AppCompatActivity() {
 
             alertDialog.show()
             val uploadTask = storageReference!!.putFile(data!!.data!!)
-            val task = uploadTask.continueWithTask { task ->
+            val task = uploadTask.continueWithTask {
+                    task ->
                 if (!task.isSuccessful) {
                     Toast.makeText(this@MainActivity, "Failed", Toast.LENGTH_SHORT).show()
                 }
@@ -38,9 +39,12 @@ class MainActivity : AppCompatActivity() {
             }.addOnCompleteListener { task ->
                 if(task.isSuccessful){
                     val downloadUri=task.result
-                    val url =downloadUri!!.toString()
+                    val url =downloadUri!!.toString().substring(0,downloadUri.toString().indexOf("token"))
                     Log.d("DIRECTLINK",url)
                     alertDialog.dismiss()
+                    Picasso.get()
+                        .load(url)
+                        .into(image_view);
                 }
 
             }
